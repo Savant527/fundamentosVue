@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Básico Fundamentos</title>
+</head>
+<body>
+    <script src="https://unpkg.com/vue@next"></script>
+    <div id="app">
+
+    </div>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    evt: "submit",
+                    text: "Hola vue",
+                    attr: "src",
+                    width: 500,
+                    counter: 0,
+                    img: "https://www.zdnet.com/a/img/resize/adcb2eb2cc3f5562f7e80931308e2a08b01947ce/2019/08/19/4a663776-f4a9-4f89-9bee-2d07ee052f5b/istock-1147195672-11.jpg?auto=webp&fit=crop&height=900&width=1200",
+                    firstName: "Sebastian",
+                    lastName: "Navas",
+                    now: new Date(),
+                    textDoor: "Puerta cerrada",
+                    open: false,
+                    username: "",
+                    posts: [{
+                        title: "Titulo 1",
+                        description: "Lorem ipsum..."
+                    }, {
+                        title: "Titulo 2",
+                        description: "Lorem ipsum..."
+                    }, {
+                        title: "Titulo 3",
+                        description: "Lorem ipsum..."
+                    }, {
+                        title: "Titulo 4",
+                        description: "Lorem ipsum..."
+                    }]
+                };
+            },
+            methods: {
+                increment(){
+                    this.counter++;
+                },
+                submit(){
+                    this.counter++;
+                },
+                // input(e){
+                //     this.text = e.target.value;
+                // }
+            },
+
+            computed: {
+                fullName(){
+                    return this.firstName + " " + this.lastName
+                },
+                date(){
+                    return this.now.toLocaleDateString();
+                }
+            },
+            watch: {
+                open(value){
+                    // console.log("watcher", value, old, this.textDoor);
+                    if (value) {
+                        this.textDoor = "Sesión abierta";
+                               
+                    } else {
+                        this.textDoor = "Cierra Sesión";
+                       
+                        
+                    }
+                }
+            },
+            computed: {
+                label(){
+                   return this.open ? "Salir" : "Acceder";
+                },
+                styles(){
+                    return this.open ? ['open']:['closed'];
+                }
+            },
+          
+            template: `<div v-once v-text v-html="text"></div>
+            <img v-bind:[attr]="img" v-bind:alt="img" v-bind:width="width">
+            <br/>
+            <form  v-on:[evt].prevent="submit"><button>{{counter}}</button></form>
+            <button v-on:click="increment">{{counter}}</button>
+            <br/>
+            <p> {{text}} <p/>
+            <input type="text" v-model="text" />
+            <br/>
+            <div> {{fullName}} <div/>
+            <div> {{date}}<div/>
+            <br/>
+            <p> {{text}} <p/>
+            <br/>
+            <div class="container" :class="styles">
+                <h2>{{ text }}</h2>
+                <div v-if="open">
+                    <p>Hola, {{ username }}</p>
+                    <div class="list">
+                        <item
+                            v-for="(item, i) in posts"
+                            :key="i"
+                            :post="item"
+                        />
+                    </div>
+                </div>
+                <div v-else>
+                    <div>Username</div>
+                    <input type="text" v-model="username" />    
+                </div>
+                <button @click="open = !open">
+                    <div v-if="!open">Acceder</div>
+                    <div v-else>Salir</div>
+                </button>
+            </div>
+            `
+        })
+
+        app.component("item", {
+            props: ["post"],
+            template: `
+            <div class="item">
+                <div class="title">{{ post.title }}</div>
+                <p>{{ post.description }}</p>
+            </div>
+            `
+        });
+        const vm = app.mount("#app");
+        console.log(vm);
+    </script>
+    <style>
+        html, body {
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #app, .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        button {
+            margin-top: 24px;
+            border: none;
+            background-color: white;
+            padding: 8px 24px;
+            border-radius: 12px;
+        }
+        .closed {
+            background-color: #eca1a6;
+        }
+        .open {
+            background-color: #b5e7a0;
+        }
+        .list {
+            display: flex;
+            flex-direction:column
+        }
+        .item {
+            border: 1px solid black;
+        }
+        .title{
+            font-weight:bold;
+            font-size:1.2rem;
+        }
+    </style>
+</body>
+</html>
